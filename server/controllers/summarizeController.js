@@ -1,6 +1,15 @@
 import scrapeTextFromURL from '../utils/puppeteerScraper.js';
 import getFlashcardsFromAI from '../utils/openaiClient.js';
-// import FlashcardCache from '../model/flashcardModel.js';
+import FlashcardCache from '../model/summaryModel.js';
+
+const isValidUrl = (string) => {
+  try {
+    new URL(string);
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
 
 export const generateSummary = async (req, res) => {
   console.log('Request body:', req.body);
@@ -14,5 +23,9 @@ export const generateSummary = async (req, res) => {
   
   if (!url) {
     return res.status(400).json({ error: 'URL is required in request body' });
+  }
+
+  if (!isValidUrl(url)) {
+    return res.status(400).json({ error: 'Invalid URL format' });
   }
 };
