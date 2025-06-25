@@ -1,5 +1,5 @@
-// import scrapeTextFromURL from '../utils/puppeteerScraper.js';
-// import getFlashcardsFromAI from '../utils/openaiClient.js';
+import scrapeTextFromURL from '../utils/puppeteerScraper.js';
+import getFlashcardsFromAI from '../utils/openaiClient.js';
 // import FlashcardCache from '../model/flashcardModel.js';
 
 export const generateSummary = async (req, res) => {
