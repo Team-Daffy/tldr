@@ -4,17 +4,20 @@ import Qna from '../components/qna';
 import '../styles/styles.css';
 
 const App = () => {
+  const [showRes, setShowRes] = useState(false);
 
-  const [showRes, setShowRes] = useState(false)
-
-  interface MyComponentProps {
-    showRes: boolean;
-  }
+  // type Showing = {
+  //   showRes: boolean;
+  //   setShowRes: React.Dispatch<React.SetStateAction<boolean>>;
+  // };
 
   return (
     <div>
-      <Http/>
-      <Qna/>
+      <Http showRes={showRes} setShowRes={setShowRes}/>
+      {showRes && (
+        <Qna />
+      )}
+      
     </div>
   );
 };
