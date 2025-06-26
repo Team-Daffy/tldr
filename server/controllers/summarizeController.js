@@ -1,6 +1,6 @@
 import scrapeTextFromURL from '../utils/puppeteerScraper.js';
 import getSummaryFromAI from '../utils/openaiClient.js';
-import FlashcardCache from '../models/summaryModel.js';
+import SummaryCache from '../models/summaryModel.js';
 import chunkText from '../utils/textChunker.js';
 
 const isValidUrl = (string) => {
@@ -31,7 +31,25 @@ export const generateSummary = async (req, res) => {
   }
 
   try {
-    console.log('Scraping URL:', url);
+    // Check if summary is already cached
+    console.log('Checking cache for URL:', url);
+    const cachedSummary = await SummaryCache.findOne({ url });
+    
+    if (cachedSummary) {
+      console.log('Cache hit! Returning cached summary');
+      return res.json({
+        success: true,
+        data: {
+          url,
+          summary: cachedSummary.summary,
+          cached: true,
+          cacheDate: cachedSummary.createdAt
+        },
+        message: 'Cached summary retrieved successfully'
+      });
+    }
+    
+    console.log('Cache miss. Scraping URL:', url);
     
     // Scrape the web data using puppeteer
     const scrapedArticle = await scrapeTextFromURL(url);
@@ -47,22 +65,34 @@ export const generateSummary = async (req, res) => {
     const chunks = await chunkText(scrapedText);
     console.log(`Text chunked into ${chunks.length} pieces`);
     
-    // // Combine chunks for summarization
-    // const combinedText = chunks.map(doc => doc.pageContent).join('\n\n---\n\n');
-    
     // Generate summary using AI
     console.log('Generating summary...');
     const summary = await getSummaryFromAI(scrapedText);
     
+    // Cache the new summary
+    try {
+      console.log('Saving summary to cache...');
+      const summaryCache = new SummaryCache({
+        url,
+        summary
+      });
+      await summaryCache.save();
+      console.log('Summary cached successfully');
+    } catch (cacheError) {
+      console.error('Failed to cache summary:', cacheError.message);
+      // Continue execution even if caching fails
+    }
+    
     // Return the summary
     res.json({
       success: true,
-              data: {
-          url,
-          summary,
-          originalLength: scrapedText.length,
-          chunkCount: chunks.length
-        },
+      data: {
+        url,
+        summary,
+        originalLength: scrapedText.length,
+        chunkCount: chunks.length,
+        cached: false
+      },
       message: 'Content scraped and summarized successfully'
     });
     
