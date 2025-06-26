@@ -9,6 +9,7 @@
   "dependencies": {
     "@langchain/core": "^0.3.61",
     "@mozilla/readability": "^0.6.0",
+    "@pinecone-database/pinecone": "^6.1.1",
     "@vitejs/plugin-react": "^4.6.0",
     "axios": "^1.10.0",
     "concurrently": "^9.2.0",
