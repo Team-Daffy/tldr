@@ -15,7 +15,10 @@ const getSummaryFromAI = async (text) => {
   const client = getOpenAIClient();
   const response = await client.chat.completions.create({
     model: "gpt-3.5-turbo",
-    messages: [{ role: 'user', content: prompt }],
+    messages: [{ 
+      role: 'user', 
+      content: `Please provide a concise summary of the following text:\n\n${text}` 
+    }],
   });
 
   return response.choices[0].message.content;
