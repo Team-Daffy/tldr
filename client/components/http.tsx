@@ -25,7 +25,6 @@ const Http = ({ showRes, setShowRes }) => {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ url }),
-        body: JSON.stringify({ url }),
       });
 
       if (!res.ok) {
