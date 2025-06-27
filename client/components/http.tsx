@@ -18,7 +18,7 @@ const Http = ({ showRes, setShowRes }) => {
       const res = await fetch('/api/ai', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({url}),
+        body: JSON.stringify({ url }),
       });
 
       if (!res.ok) {
@@ -42,6 +42,7 @@ const Http = ({ showRes, setShowRes }) => {
   return (
     <section id='http_container'>
       <input
+        type='text'
         id='http_input'
         placeholder='URL'
         value={url}

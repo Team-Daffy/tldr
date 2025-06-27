@@ -52,7 +52,7 @@ const Qna = () => {
       {showAns && (
         <section id='answer_container' className='response-container'>
           <div id='answer' className='response'>
-            {answer}AAAAAH
+            {answer}
           </div>
         </section>
       )}
