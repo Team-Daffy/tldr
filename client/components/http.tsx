@@ -7,18 +7,24 @@ const Http = ({ showRes, setShowRes }) => {
   const [error, setError] = useState(null);
 
   type OpenaiRes = {
-    body: string;
+    success: boolean;
+    data: {
+      url: string;
+      summary: string;
+      cached: boolean;
+      cacheDate?: string;
+    };
+    message: string;
   };
-  //this is likely going to change, this is just for a bit of scaffolding
 
   const urlSendHandler = async (): Promise<void> => {
     //this will send the url to the backend, get a response and set a
     //state variable to show the box with the response
     try {
-      const res = await fetch('/api/ai', {
+      const res = await fetch('/api/generate-summary', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({url}),
+        body: JSON.stringify({ url }),
       });
 
       if (!res.ok) {
@@ -27,11 +33,11 @@ const Http = ({ showRes, setShowRes }) => {
 
       const data: OpenaiRes = await res.json();
 
-      if (data.body.length === 0) {
+      if (data.data.summary.length === 0) {
         throw new Error('Recieved info has no body in urlSendHandler');
       }
 
-      setResponse(data.body);
+      setResponse(data.data.summary);
       setShowRes(true);
     } catch (err) {
       setError('Server was unable to send a response, try again');
@@ -40,19 +46,19 @@ const Http = ({ showRes, setShowRes }) => {
   };
 
   return (
-    <section id='http_container'>
+    <section id="http_container">
       <input
-        id='http_input'
-        placeholder='URL'
+        id="http_input"
+        placeholder="URL"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
       />
-      <button id='send_URL' onClick={urlSendHandler}>
+      <button id="send_URL" onClick={urlSendHandler}>
         Gimme Summ
       </button>
       {showRes && (
-        <section id='openai_res_container' className='response-container'>
-          <div id='openai_res' className='response'>
+        <section id="openai_res_container" className="response-container">
+          <div id="openai_res" className="response">
             {response}
           </div>
         </section>
